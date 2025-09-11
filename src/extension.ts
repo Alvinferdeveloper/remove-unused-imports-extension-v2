@@ -4,7 +4,7 @@ import { analyzeFile } from './analyzer';
 export function activate(context: vscode.ExtensionContext) {
 
     // Command to clean unused imports in the currently active file
-    const cleanCurrentFile = vscode.commands.registerCommand('remove-unused-imports.cleanCurrentFile', async () => {
+    const cleanCurrentFile = vscode.commands.registerCommand('RemoveUnusedImports.cleanCurrentFile', async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             vscode.window.showInformationMessage('No active editor found.');
@@ -27,8 +27,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     // Command to clean unused imports in the entire project
-    const cleanProject = vscode.commands.registerCommand('remove-unused-imports.cleanProject', async () => {
-        const config = vscode.workspace.getConfiguration('remove-unused-imports');
+    const cleanProject = vscode.commands.registerCommand('RemoveUnusedImports.cleanProject', async () => {
+        const config = vscode.workspace.getConfiguration('RemoveUnusedImports');
         const excludePatterns = config.get<string[]>('exclude') || [];
         const excludeGlob = `{${excludePatterns.join(',')}}`;
 

@@ -15,7 +15,7 @@ async function testCommand(initialContent: string, expectedContent: string): Pro
 	await new Promise(resolve => setTimeout(resolve, 1000));
 
 	// Execute the command
-	await vscode.commands.executeCommand('remove-unused-imports.cleanCurrentFile');
+	await vscode.commands.executeCommand('RemoveUnusedImports.cleanCurrentFile');
 
 	// It may take a moment for the edits to apply and save
 	await new Promise(resolve => setTimeout(resolve, 500));
