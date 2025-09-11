@@ -130,4 +130,86 @@ suite('Remove Unused Imports Extension Test Suite', function () {
 		const expected = `import { Name } from './module';${EOL}const obj = { Name };`;
 		await testCommand(initial, expected);
 	});
+
+	test('Should keep Angular imports used in decorators', async () => {
+		const initial = `
+          import { Component, Injectable } from '@angular/core';
+          
+          @Component({
+            selector: 'app-root',
+            template: '<div></div>'
+          })
+          @Injectable()
+          export class AppComponent {}
+        `;
+		const expected = initial; // Expect no changes
+		await testCommand(initial, expected);
+	});
+
+	test('Should keep Vue imports used in components object', async () => {
+		const initial = `
+          import { ref, computed } from 'vue';
+          import MyComponent from './MyComponent.vue';
+    
+          export default {
+            components: {
+              MyComponent
+            },
+            setup() {
+              const count = ref(0);
+              const double = computed(() => count.value * 2);
+              return { count, double };
+            }
+          }
+        `;
+		const expected = initial; // Expect no changes
+		await testCommand(initial, expected);
+	});
+
+	test('Should keep Svelte imports used in stores and transitions', async () => {
+		const initial = `
+          import { writable } from 'svelte/store';
+          import { fade } from 'svelte/transition';
+    
+          const count = writable(0);
+          
+          <div transition:fade>
+            {$count}
+          </div>
+        `;
+		const expected = initial; // Expect no changes
+		await testCommand(initial, expected);
+	});
+
+	test('Should keep Next.js imports used in data fetching functions', async () => {
+		const initial = `
+          import { GetStaticProps, GetStaticPaths } from 'next';
+          
+          export const getStaticProps: GetStaticProps = async () => {
+            return { props: {} }
+          }
+          
+          export const getStaticPaths: GetStaticPaths = async () => {
+            return { paths: [], fallback: false }
+          }
+        `;
+		const expected = initial; // Expect no changes
+		await testCommand(initial, expected);
+	});
+
+	test('Should keep GraphQL imports used in tagged template literals', async () => {
+		const initial = `
+			import { gql } from 'graphql-tag';
+			
+			const QUERY = gql\`
+				query GetUser {	
+					user {
+						id
+					}
+				}
+		\`;
+`;
+		const expected = initial; // Expect no changes
+		await testCommand(initial, expected);
+	});
 });
