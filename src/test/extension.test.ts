@@ -118,4 +118,16 @@ suite('Remove Unused Imports Extension Test Suite', function () {
 		const expected = `console.log('hello');`;
 		await testCommand(initial, expected);
 	});
+
+	test('Should remove import if used only as an object property name', async () => {
+		const initial = `import { Name } from './module';${EOL}const obj = { Name: 'value' };`;
+		const expected = `const obj = { Name: 'value' };`;
+		await testCommand(initial, expected);
+	});
+
+	test('Should NOT remove import if used as a shorthand property', async () => {
+		const initial = `import { Name } from './module';${EOL}const obj = { Name };`;
+		const expected = `import { Name } from './module';${EOL}const obj = { Name };`;
+		await testCommand(initial, expected);
+	});
 });

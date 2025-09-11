@@ -25,9 +25,26 @@ export function analyzeFile(sourceCode: string, fileName: string): vscode.TextEd
 
     // First pass: collect all identifiers used in the code
     ts.forEachChild(sourceFile, function visit(node) {
-        // We are not interested in identifiers from import declarations in this pass
-        if (ts.isImportDeclaration(node)) {
-            return;
+        if (ts.isImportDeclaration(node)) { return; }
+
+        // For nodes that have a 'name' property that is a declaration, and for
+        // property assignments, we want to visit the rest of the node, but not
+        // count the name/key as a usage of a variable.
+        if (ts.isFunctionDeclaration(node) ||
+            ts.isClassDeclaration(node) ||
+            ts.isMethodDeclaration(node) ||
+            ts.isPropertyDeclaration(node) ||
+            ts.isParameter(node) ||
+            ts.isPropertyAssignment(node)
+        ) {
+            ts.forEachChild(node, child => {
+                // The 'name' property of these nodes is a declaration, not a usage.
+                // For PropertyAssignment, it's the key.
+                if (child !== node.name) {
+                    visit(child);
+                }
+            });
+            return; // Use custom traversal for these nodes
         }
 
         if (ts.isIdentifier(node)) {
