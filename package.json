@@ -3,6 +3,7 @@
   "displayName": "Remove Unused JS/TS Imports",
   "description": "Removes unused imports from JavaScript and TypeScript files.",
   "version": "0.1.0",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.104.0"
   },
