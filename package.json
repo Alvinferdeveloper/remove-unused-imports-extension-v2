@@ -4,12 +4,17 @@
   "description": "Removes unused imports from JavaScript and TypeScript files.",
   "version": "0.1.0",
   "engines": {
-    "vscode": "^1.103.2"
+    "vscode": "^1.104.0"
   },
   "categories": [
     "Linters",
     "Formatters"
   ],
+  "icon": "./images/extension-logo.jpeg",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Alvinferdeveloper/remove-unused-imports-extension-v2.git"
+  },
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
