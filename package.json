@@ -1,0 +1,47 @@
+{
+  "name": "remove-unused-js-ts-imports",
+  "displayName": "remove-unused-js/ts-imports",
+  "description": "Removes unused imports from JavaScript and TypeScript files.",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "categories": [
+    "Linters",
+    "Formatters"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "remove-unused-imports.cleanCurrentFile",
+        "title": "Remove unused imports in current file"
+      },
+      {
+        "command": "remove-unused-imports.cleanProject",
+        "title": "Remove unused imports in project"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "dependencies": {
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.104.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "eslint": "^9.34.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}
