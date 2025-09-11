@@ -94,10 +94,10 @@ export function analyzeFile(sourceCode: string, fileName: string): vscode.TextEd
 
         if (!defaultImportName && (!usedSpecifiers || usedSpecifiers.length === 0)) {
             const range = getRange(sourceFile, declaration);
-            const line = range.start.line;
-            const lineCount = sourceFile.getLineAndCharacterOfPosition(sourceFile.getEnd()).line + 1;
-            const nextLineExists = line + 1 < lineCount;
-            const deletionRange = new vscode.Range(line, 0, line + (nextLineExists ? 1 : 0), nextLineExists ? 0 : range.end.character);
+            // Create a range from the start of the first line of the import
+            // to the start of the line following the last line of the import.
+            // This effectively deletes the entire block of lines the import occupies.
+            const deletionRange = new vscode.Range(range.start.line, 0, range.end.line + 1, 0);
             edits.push(vscode.TextEdit.delete(deletionRange));
         } else {
             let newImport = 'import ';

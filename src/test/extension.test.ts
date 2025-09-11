@@ -108,4 +108,14 @@ suite('Remove Unused Imports Extension Test Suite', function () {
 		const expected = `import { a as a_alias, c } from './module';${EOL}console.log(a_alias, c);`;
 		await testCommand(initial, expected);
 	});
+
+	test('Should remove entire multi-line import if all specifiers are unused', async () => {
+		const initial = `import {
+				MessageSquarePlus,
+				MessageSquare,
+				MessageSquareX,
+			} from 'lucide-react';${EOL}console.log('hello');`;
+		const expected = `console.log('hello');`;
+		await testCommand(initial, expected);
+	});
 });
