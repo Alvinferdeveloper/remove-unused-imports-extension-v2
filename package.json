@@ -12,6 +12,26 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Remove Unused Imports",
+      "properties": {
+        "remove-unused-imports.exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/out/**",
+            "**/.next/**",
+            "**/build/**",
+            "**/coverage/**"
+          ],
+          "description": "An array of glob patterns for files and folders to exclude from analysis."
+        }
+      }
+    },
     "commands": [
       {
         "command": "remove-unused-imports.cleanCurrentFile",

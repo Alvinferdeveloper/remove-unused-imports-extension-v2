@@ -28,7 +28,11 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Command to clean unused imports in the entire project
     const cleanProject = vscode.commands.registerCommand('remove-unused-imports.cleanProject', async () => {
-        const files = await vscode.workspace.findFiles('{**/*.ts,**/*.js}', '**/node_modules/**');
+        const config = vscode.workspace.getConfiguration('remove-unused-imports');
+        const excludePatterns = config.get<string[]>('exclude') || [];
+        const excludeGlob = `{${excludePatterns.join(',')}}`;
+
+        const files = await vscode.workspace.findFiles('{**/*.ts,**/*.js}', excludeGlob);
         if (files.length === 0) {
             vscode.window.showInformationMessage('No TypeScript or JavaScript files found in the project.');
             return;
