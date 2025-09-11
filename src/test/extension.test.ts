@@ -90,4 +90,22 @@ suite('Remove Unused Imports Extension Test Suite', function () {
 		const expected = `import { c } from './module';${EOL}console.log(c);`;
 		await testCommand(initial, expected);
 	});
+
+	test('Should not remove a side-effect import', async () => {
+		const initial = `import './styles.css';${EOL}console.log('hello');`;
+		const expected = `import './styles.css';${EOL}console.log('hello');`;
+		await testCommand(initial, expected);
+	});
+
+	test('Should not touch re-export statements', async () => {
+		const initial = `export { a } from './module';${EOL}console.log('hello');`;
+		const expected = `export { a } from './module';${EOL}console.log('hello');`;
+		await testCommand(initial, expected);
+	});
+
+	test('Should handle complex mixed imports with aliases', async () => {
+		const initial = `import Def, { a as a_alias, b, c } from './module';${EOL}console.log(a_alias, c);`;
+		const expected = `import { a as a_alias, c } from './module';${EOL}console.log(a_alias, c);`;
+		await testCommand(initial, expected);
+	});
 });
