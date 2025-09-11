@@ -4,7 +4,7 @@
   "description": "Removes unused imports from JavaScript and TypeScript files.",
   "version": "0.1.0",
   "engines": {
-    "vscode": "^1.104.0"
+    "vscode": "^1.103.2"
   },
   "categories": [
     "Linters",
