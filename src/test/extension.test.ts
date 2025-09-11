@@ -212,4 +212,290 @@ suite('Remove Unused Imports Extension Test Suite', function () {
 		const expected = initial; // Expect no changes
 		await testCommand(initial, expected);
 	});
+
+	test('removeUnusedImports - Unused default imports', async () => {
+		const initial = `
+      import something from 'module';
+      const x = 10;
+    `;
+		const expected = `
+      const x = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - one unused named import on a single line', async () => {
+		const initial = `
+      import { something } from 'module';
+      const x = 10;
+    `;
+		const expected = `
+      const x = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - used and unused named imports on a single line', async () => {
+		const initial = `
+      import { something, anything } from 'module';
+      const x = 10;
+      const result = something();
+    `;
+		const expected = `
+      import { something } from 'module';
+      const x = 10;
+      const result = something();
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - multiple unused imports from different modules', async () => {
+		const initial = `
+      import { something } from 'module1';
+      import { another } from 'module2';
+      import { third } from 'module3';
+      const x = 10;
+    `;
+		const expected = `
+      const x = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - namespace imports', async () => {
+		const initial = `
+      import * as myModule from 'module';
+      const x = 10;
+    `;
+		const expected = `
+      const x = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - unused type imports in TypeScript', async () => {
+		const initial = `
+      import type { UnusedType1, UnusedType2 } from 'types';
+      const x = 10;
+    `;
+		const expected = `
+      const x = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - mixed used and unused type imports', async () => {
+		const initial = `
+      import type { UsedType, UnusedType } from 'types';
+      const x: UsedType = 10;
+    `;
+		const expected = `
+      import type { UsedType } from 'types';
+      const x: UsedType = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - unused aliased imports', async () => {
+		const initial = `
+      import { something as somethingElse } from 'module';
+      const x = 10;
+    `;
+		const expected = `
+      const x = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - unused default with used named imports', async () => {
+		const initial = `
+      import defaultExport, { used } from 'module';
+      const x = used();
+    `;
+		const expected = `
+      import { used } from 'module';
+      const x = used();
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - unused named with used default imports', async () => {
+		const initial = `
+      import defaultExport, { unused1, unused2 } from 'module';
+      const x = defaultExport();
+    `;
+		const expected = `
+      import defaultExport from 'module';
+      const x = defaultExport();
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - commented code should not prevent removal', async () => {
+		const initial = `
+      import { unused } from 'module';
+      // const x = unused();
+      /* const y = unused(); */
+      const z = 10;
+    `;
+		const expected = `
+      // const x = unused();
+      /* const y = unused(); */
+      const z = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - string literals should not prevent removal', async () => {
+		const initial = `
+      import { unused } from 'module';
+      const x = "unused";
+      const y = 
+      const z = 10;
+    `;
+		const expected = `
+      const x = "unused";
+      const y = 
+      const z = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - object property names should not prevent removal', async () => {
+		const initial = `
+      import { unused } from 'module';
+      const obj = {
+        unused: 123,
+        'unused': 456
+      };
+    `;
+		const expected = `
+      const obj = {
+        unused: 123,
+        'unused': 456
+      };
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - destructuring should not prevent removal', async () => {
+		const initial = `
+      import { unused } from 'module';
+      const { unused: renamed } = someObject;
+    `;
+		const expected = `
+      const { unused: renamed } = someObject;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - multiple type-only imports', async () => {
+		const initial = `
+      import type { UnusedType } from 'types1';
+      import { type AnotherUnused } from 'types2';
+      const x = 10;
+    `;
+		const expected = `
+      const x = 10;
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - keep named import in named combined import', async () => {
+		const initial = `
+      import { used, type AnotherUnused, lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y = used();
+    `;
+		const expected = `
+      import { used } from 'module';
+      const x = 10;
+      const y = used();
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - keep type import in named combined import', async () => {
+		const initial = `
+      import { unused, type UsedType, lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y:UsedType = "hola";
+    `;
+		const expected = `
+      import { type UsedType } from 'module';
+      const x = 10;
+      const y:UsedType = "hola";
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - keep aliased import named combined import', async () => {
+		const initial = `
+      import { unused, type UnUsedType, lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y = lastUsedAlias();
+    `;
+		const expected = `
+      import { lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y = lastUsedAlias();
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - keep named import in default and combined import', async () => {
+		const initial = `
+      import defaultImport, { used, type UnUsedType, lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y = used();
+    `;
+		const expected = `
+      import { used } from 'module';
+      const x = 10;
+      const y = used();
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - keep type import in default and combined import', async () => {
+		const initial = `
+      import defaultImport, { unused, type UsedType, lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y: UsedType = 'hola';
+    `;
+		const expected = `
+      import { type UsedType } from 'module';
+      const x = 10;
+      const y: UsedType = 'hola';
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - keep aliased import in default and combined import', async () => {
+		const initial = `
+      import defaultImport, { unused, type UnUsedType, lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y = lastUsedAlias();
+    `;
+		const expected = `
+      import { lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y = lastUsedAlias();
+    `;
+		await testCommand(initial, expected);
+	});
+
+	test('removeUnusedImports - keep default import in default and combined import', async () => {
+		const initial = `
+      import defaultImport, { unused, type UnUsedType, lastUsed as lastUsedAlias } from 'module';
+      const x = 10;
+      const y = defaultImport();
+    `;
+		const expected = `
+      import defaultImport from 'module';
+      const x = 10;
+      const y = defaultImport();
+    `;
+		await testCommand(initial, expected);
+	});
 });
