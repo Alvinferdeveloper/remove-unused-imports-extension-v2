@@ -1,6 +1,6 @@
 {
   "name": "remove-unused-js-ts-imports",
-  "displayName": "remove-unused-js/ts-imports",
+  "displayName": "Remove Unused JS/TS Imports",
   "description": "Removes unused imports from JavaScript and TypeScript files.",
   "version": "0.1.0",
   "engines": {
@@ -35,11 +35,11 @@
     "commands": [
       {
         "command": "remove-unused-imports.cleanCurrentFile",
-        "title": "Remove unused imports in current file"
+        "title": "Remove Unused Imports (File)"
       },
       {
         "command": "remove-unused-imports.cleanProject",
-        "title": "Remove unused imports in project"
+        "title": "Remove Unused Imports (Project)"
       }
     ]
   },
