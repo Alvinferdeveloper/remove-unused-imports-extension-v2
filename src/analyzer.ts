@@ -47,6 +47,16 @@ export function analyzeFile(sourceCode: string, fileName: string): vscode.TextEd
             return; // Use custom traversal for these nodes
         }
 
+        // Special handling for BindingElement to ignore its propertyName
+        if (ts.isBindingElement(node)) {
+            ts.forEachChild(node, child => {
+                if (child !== node.propertyName) { // Ignore the propertyName
+                    visit(child);
+                }
+            });
+            return;
+        }
+
         if (ts.isIdentifier(node)) {
             allIdentifiers.add(node.text);
         }
@@ -118,6 +128,9 @@ export function analyzeFile(sourceCode: string, fileName: string): vscode.TextEd
             edits.push(vscode.TextEdit.delete(deletionRange));
         } else {
             let newImport = 'import ';
+            if (declaration.importClause?.isTypeOnly) { // FIX 1: Added this line
+                newImport += 'type ';
+            }
             if (defaultImportName) {
                 newImport += defaultImportName;
                 if (usedSpecifiers && usedSpecifiers.length > 0) {
@@ -148,4 +161,3 @@ function getRange(sourceFile: ts.SourceFile, node: ts.Node): vscode.Range {
     const end = sourceFile.getLineAndCharacterOfPosition(node.getEnd());
     return new vscode.Range(start.line, start.character, end.line, end.character);
 }
-
