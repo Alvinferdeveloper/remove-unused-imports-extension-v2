@@ -128,7 +128,7 @@ export function analyzeFile(sourceCode: string, fileName: string): vscode.TextEd
             edits.push(vscode.TextEdit.delete(deletionRange));
         } else {
             let newImport = 'import ';
-            if (declaration.importClause?.isTypeOnly) { // FIX 1: Added this line
+            if (declaration.importClause?.phaseModifier) {
                 newImport += 'type ';
             }
             if (defaultImportName) {
