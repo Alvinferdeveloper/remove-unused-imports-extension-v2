@@ -10,9 +10,18 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.window.showInformationMessage('No active editor found.');
             return;
         }
+        const allowedLanguages = [
+            'javascript',
+            'typescript',
+            'javascriptreact',
+            'typescriptreact',
+            'vue',
+            'astro',
+            'coffeescript',
+        ];
 
         const document = editor.document;
-        if (document.languageId !== 'typescript' && document.languageId !== 'javascript') {
+        if (!allowedLanguages.includes(document.languageId)) {
             vscode.window.showInformationMessage('This command only works on JavaScript and TypeScript files.');
             return;
         }
@@ -32,7 +41,9 @@ export function activate(context: vscode.ExtensionContext) {
         const excludePatterns = config.get<string[]>('exclude') || [];
         const excludeGlob = `{${excludePatterns.join(',')}}`;
 
-        const files = await vscode.workspace.findFiles('{**/*.ts,**/*.js}', excludeGlob);
+        const includeGlob = '{**/*.ts,**/*.js,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.astro}';
+
+        const files = await vscode.workspace.findFiles(includeGlob, excludeGlob);
         if (files.length === 0) {
             vscode.window.showInformationMessage('No TypeScript or JavaScript files found in the project.');
             return;
